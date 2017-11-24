@@ -118,14 +118,14 @@ class database
 
 
 	//查找数据列表
-	public function getDataList($table, $select = '*', $where = 1, $param = [], $order = 'id desc', $limit = 20) 
+	public function getDataList($table, $select = '*', $where = 1, $param = [], $order = 'id desc', $limit = 20, $offset = 0) 
 	{
 		if(!is_string($select)) {
 			return [];
 		}
 		$sql = "SELECT {$select} FROM {$table} WHERE {$where} ORDER BY {$order}";
 		if ($limit) {
-			$sql .= " LIMIT {$limit}";
+			$sql .= " LIMIT {$offset},{$limit}";
 		}
 		return $this->execute($sql, $param)->fetchAll(PDO::FETCH_ASSOC);
 	}

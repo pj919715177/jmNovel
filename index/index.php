@@ -1,14 +1,26 @@
 <?php
 header("Content-type:text/html;charset=utf-8");
 require_once('database.php');
+require_once('page.php');
+//获取页数
+$pageNum = 1;
+isset($_GET['pageNum']) && $pageNum = (int)$_GET['pageNum'];
+$pageNum < 1 && $pageNum = 1;
 $database = new database();
 
 $table = 'jm_bage_novel';
-$select = 'id,novelName,novelAuthor,lastChapterName,lastChapterId';
-$result = $database->getDataList($table, $select);
-var_dump($result);die;
-?>
+//获取数据总数
+$count = 0;
+$countData = $database->getDataDetail($table, 'count(id) as count');
+$countData && $count = $countData['count'];
 
+//设置分页
+$page = new page($pageNum, 20, $count);
+//获取数据详情
+$select = 'id,novelName,novelAuthor,lastChapterName,lastChapterId';
+$offset = 20 * ($pageNum - 1);
+$result = $database->getDataList($table, $select, 'novelType IN(1,2,3,4,5,6) AND feature in(1,2,3)', [], 'id desc', 20, $offset);
+?>
 
 <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
 <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -33,6 +45,9 @@ var_dump($result);die;
 	margin-left: 3px;
 	color: blue;
 }
+.page{
+	margin-left: 10%;
+}
 </style>
 
 
@@ -54,3 +69,5 @@ var_dump($result);die;
 	<?php } ?>
   </table>
 </div>
+
+<?php $page->showPage();?>

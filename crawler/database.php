@@ -5,6 +5,11 @@ class database
 	private $user;
 	private $password;
 	private $pdo;
+
+	private $novelTable = 'jm_bage_novel';
+	private $chapterTable = 'jm_bage_chapter';
+	private $errorsTable = 'jm_bage_errors_log';
+
 	public function __construct()
 	{
 		$this->dsn = 'mysql:dbname=farmoe_jm_novel;host=127.0.0.1';
@@ -62,10 +67,14 @@ class database
 					$order++;
 				}
 				$sql = rtrim($sql, ',');
-				$result += (int)$this->execute($sql, $param)->rowCount();
+				//影响行数
+				$tempCount = (int)$this->execute($sql, $param)->rowCount();
+				$result += $tempCount;
 			}
 		}
-		return $result;
+		//最新id
+		$lastId = $this->getLastId() + $tempCount - 1;
+		return $lastId;
 	}
 
 	//插入一条数据
@@ -147,5 +156,23 @@ class database
 		$sql = "SELECT MAX(`id`) as maxId FROM {$table}";
 		$result = $this->execute($sql)->fetch(PDO::FETCH_ASSOC);
 		return $result['maxId'];
+	}
+
+	//开始事务
+	public function start()
+	{
+		$this->pdo->beginTransaction();
+	}
+
+	//提交事务
+	public function end()
+	{
+		$this->pdo->commit();
+	}
+
+	//事务回滚
+	public function back()
+	{
+		$this->pdo->rollBack();
 	}
 }

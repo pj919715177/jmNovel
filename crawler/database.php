@@ -73,8 +73,8 @@ class database
 			}
 		}
 		//最新id
-		$lastId = $this->getLastId() + $tempCount - 1;
-		return $lastId;
+		// $lastId = $this->getLastId() + $tempCount - 2;
+		return $result;
 	}
 
 	//插入一条数据
@@ -151,10 +151,11 @@ class database
 	}
 
 	//获取表中最大id
-	public function getMaxId($table) 
+	public function getMaxId($novelId) 
 	{
-		$sql = "SELECT MAX(`id`) as maxId FROM {$table}";
-		$result = $this->execute($sql)->fetch(PDO::FETCH_ASSOC);
+		$sql = "SELECT MAX(`id`) as maxId FROM {$this->chapterTable} WHERE novelId=:novelId";
+		$param = [':novelId' => $novelId];
+		$result = $this->execute($sql, $param)->fetch(PDO::FETCH_ASSOC);
 		return $result['maxId'];
 	}
 

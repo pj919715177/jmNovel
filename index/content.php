@@ -1,7 +1,7 @@
 <?php
 header("Content-type:text/html;charset=utf-8");
-require_once('database.php');
-$database = new database();
+require_once('datebase.php');
+$datebase = new datebase();
 
 $chapterId = $_GET['chapterId'];
 
@@ -10,7 +10,7 @@ $table = 'jm_bage_chapter';
 $select = 'novelId,title,content';
 $where = 'id=:id';
 $param = [':id' => $chapterId];
-$chapterData = $database->getDataDetail($table, $select, $where, $param);
+$chapterData = $datebase->getDataDetail($table, $select, $where, $param);
 
 $novelId = $chapterData['novelId'];
 //获取小说数据
@@ -18,7 +18,7 @@ $table = 'jm_bage_novel';
 $select = 'novelName,novelAuthor,introduce';
 $where = 'id=:id';
 $param = [':id' => $novelId];
-$novelData = $database->getDataDetail($table, $select, $where, $param);
+$novelData = $datebase->getDataDetail($table, $select, $where, $param);
 ?>
 
 <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->

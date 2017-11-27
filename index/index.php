@@ -1,17 +1,17 @@
 <?php
 header("Content-type:text/html;charset=utf-8");
-require_once('database.php');
+require_once('datebase.php');
 require_once('page.php');
 //获取页数
 $pageNum = 1;
 isset($_GET['pageNum']) && $pageNum = (int)$_GET['pageNum'];
 $pageNum < 1 && $pageNum = 1;
-$database = new database();
+$datebase = new datebase();
 
 $table = 'jm_bage_novel';
 //获取数据总数
 $count = 0;
-$countData = $database->getDataDetail($table, 'count(id) as count');
+$countData = $datebase->getDataDetail($table, 'count(id) as count');
 $countData && $count = $countData['count'];
 
 //设置分页
@@ -19,7 +19,7 @@ $page = new page($pageNum, 20, $count);
 //获取数据详情
 $select = 'id,novelName,novelAuthor,lastChapterName,lastChapterId';
 $offset = 20 * ($pageNum - 1);
-$result = $database->getDataList($table, $select, 'novelType IN(1,2,3,4,5,6) AND feature in(1,2,3)', [], 'id desc', 20, $offset);
+$result = $datebase->getDataList($table, $select, 'novelType IN(1,2,3,4,5,6) AND feature in(1,2,3)', [], 'id desc', 20, $offset);
 ?>
 
 <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->

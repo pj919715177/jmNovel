@@ -1,14 +1,14 @@
 <?php
 class save
 {
-	private $database;
+	private $datebase;
 	private $crawler;
 	private $novelTable = 'jm_bage_novel';
 	private $chapterTable = 'jm_bage_chapter';
 	private $errorsTable = 'jm_bage_errors_log';
-	public function __construct($database, $crawler)
+	public function __construct($datebase, $crawler)
 	{
-		$this->database = $database;
+		$this->datebase = $datebase;
 		$this->crawler = $crawler;
 	}
 
@@ -23,20 +23,20 @@ class save
 			}
 			try {
 				//开始事务
-				$this->database->start();
-				$this->database->insertData($this->novelTable, $novelData);
-				$novelId = $this->database->getLastId();
+				$this->datebase->start();
+				$this->datebase->insertData($this->novelTable, $novelData);
+				$novelId = $this->datebase->getLastId();
 				$chapterData = $this->crawler->crawlChapter($originalId, $novelId);
-				$lastId = $this->database->multipleInsert($this->chapterTable, $chapterData);
+				$lastId = $this->datebase->multipleInsert($this->chapterTable, $chapterData);
 				//更新最新章节id和最新章节名;
 				$lastData = $this->getLastInfo($chapterData, $novelId);
-				$this->database->updateDataById($this->novelTable, $lastData, $novelId);
+				$this->datebase->updateDataById($this->novelTable, $lastData, $novelId);
 				echo "已爬取完一篇小说{$originalId}\n\n";
 				//提交事务
-				$this->database->end();
+				$this->datebase->end();
 			} catch (Exception $e) {
 				//事务回滚
-				$this->database->back();
+				$this->datebase->back();
 				$this->handleErrors($e->getMessage(), $originalId);
 			}
 		}
@@ -45,7 +45,7 @@ class save
 	//获取最新章节id和最新章节名
 	public function getLastInfo($chapterData, $novelId)
 	{
-		$lastId = $this->database->getMaxId($novelId);
+		$lastId = $this->datebase->getMaxId($novelId);
 		$count = count($chapterData);
 		$temp = array_pop($chapterData);
 		$result = [
@@ -65,7 +65,7 @@ class save
 			'message' => $message,
 			'createTime' => time(),
 		];
-		$this->database->insertData($this->errorsTable, $data);
+		$this->datebase->insertData($this->errorsTable, $data);
 	}
 
 }

@@ -1,7 +1,7 @@
 <?php
 header("Content-type:text/html;charset=utf-8");
-require_once('database.php');
-$database = new database();
+require_once('datebase.php');
+$datebase = new datebase();
 
 $id = $_GET['novelId'];
 $id = (int)$id ? (int)$id : 1;
@@ -10,13 +10,13 @@ $table = 'jm_bage_novel';
 $select = 'novelName,novelAuthor,introduce';
 $where = 'id=:id';
 $param = [':id' => $id];
-$novelData = $database->getDataDetail($table, $select, $where, $param);
+$novelData = $datebase->getDataDetail($table, $select, $where, $param);
 //获取章节数据
 $table = 'jm_bage_chapter';
 $select = 'id,title';
 $where = 'novelId=:novelId';
 $param = [':novelId' => $id];
-$chapterData = $database->getDataList($table, $select, $where, $param, 'id asc', false);
+$chapterData = $datebase->getDataList($table, $select, $where, $param, 'id asc', false);
 ?>
 
 

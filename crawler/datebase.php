@@ -1,5 +1,5 @@
 <?php
-class datebase
+class database
 {
 	private $dsn;
 	private $user;
